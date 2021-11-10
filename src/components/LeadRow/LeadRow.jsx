@@ -63,6 +63,7 @@ function LeadRow(props) {
             flex: '1 1 10%',
             display: 'flex',
             alignItems: 'center',
+            justifyContent:'flex-end'
           }}>{humanDate}</TableCell>
         <TableCell align='right' sx={{
             flex: '1 1 10%',
