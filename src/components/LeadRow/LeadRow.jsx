@@ -11,14 +11,16 @@ import {
   Typography,
 } from '@mui/material';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
+import classes from './LeadRow.module.css'
 
 function LeadRow(props) {
-  const { row } = props;
+  const { row , contacts } = props;
   const [open, setOpen] = useState(false);
   const date = new Date(row.created_at * 1000);
   const humanDate =
     date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
-
+  const isTags = row._embedded.tags.length > 0;
+  console.log(isTags);
   return (
     <>
       <TableRow {...props}>
@@ -41,6 +43,7 @@ function LeadRow(props) {
           }}
         >
           {row.name}
+          {isTags && row._embedded.tags.map(tag => <div className={classes.Tag}>{tag.name}</div>)}
         </TableCell>
         <TableCell align='right' sx={{
             flex: '1 1 20%',
@@ -48,14 +51,14 @@ function LeadRow(props) {
             alignItems: 'center',
             justifyContent:'flex-end'
             
-          }}>{row.status_id}</TableCell>
+          }}><div className={classes.Status} style={{backgroundColor:`${row.status.color}`}}>{row.status.name}</div></TableCell>
         <TableCell align='right' sx={{
             flex: '1 1 20%',
             display: 'flex',
             alignItems: 'center',
             justifyContent:'flex-end'
             
-          }}>{row.responsible_user_id}</TableCell>
+          }}>{row.resUser.name}</TableCell>
         <TableCell align='right' sx={{
             flex: '1 1 10%',
             display: 'flex',
@@ -77,10 +80,8 @@ function LeadRow(props) {
               <Table size='small' aria-label='purchases'>
                 <TableBody>
                   <TableRow>
-                    <TableCell>{row.responsible_user_id}</TableCell>
-                    <TableCell>{row.responsible_user_id}</TableCell>
-                    <TableCell>{row.responsible_user_id}</TableCell>
-                    <TableCell>{row.responsible_user_id}</TableCell>
+                    {contacts.map((contact, id) => <TableCell key={id}>{contact.name}</TableCell>)}
+                    
                   </TableRow>
                 </TableBody>
               </Table>
