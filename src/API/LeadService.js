@@ -1,6 +1,6 @@
 import axios from 'axios';
 import path from 'path';
-const BACK_URL = 'http://localhost:5000/';
+const BACK_URL = 'https://9969-94-19-75-204.ngrok.io/';
 
 export default class EventService {
   static async getAll(query) {

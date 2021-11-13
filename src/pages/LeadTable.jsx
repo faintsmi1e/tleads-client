@@ -9,13 +9,13 @@ import classes from './LeadTable.module.css';
 import Header from '../components/Header/Header';
 const LeadTable = () => {
   const [leads, setLeads] = useState([]);
-  const [contacts, setContacts] = useState([]);
+  
 
   const [fetchData, isLeadsLoading, leadError] = useFetching(async () => {
     const response = await LeadService.getAll();
     console.log(response);
     setLeads(response.leads.reverse());
-    setContacts(response.contacts)
+    
   });
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const LeadTable = () => {
   }, []);
   return (
     <>
-      <Header setLeads={setLeads} setContacts={setContacts}></Header>
+      <Header setLeads={setLeads} ></Header>
       <TableContainer
         sx={{
           border: 1,
@@ -54,7 +54,7 @@ const LeadTable = () => {
                 }}
                 key={id}
                 row={lead}
-                contacts={contacts}
+                
               ></LeadRow>
             );
           })

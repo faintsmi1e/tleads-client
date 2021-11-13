@@ -5,13 +5,13 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useFetching } from '../../hooks/useFetching';
 import LeadService from '../../API/LeadService';
 
-const Header = ({ setLeads, setContacts }) => {
+const Header = ({ setLeads}) => {
   const [query, setQuery] = useState('');
   const [fetchData, isLeadsLoading, leadError] = useFetching(async () => {
     const response = await LeadService.getAll(query);
     console.log(response);
     setLeads(response.leads.reverse());
-    setContacts(response.contacts);
+    
   });
   const onSearchClick = () => {
     fetchData();

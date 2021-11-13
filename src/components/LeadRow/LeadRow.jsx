@@ -9,18 +9,35 @@ import {
   Collapse,
   Box,
   Typography,
+  Tab,
 } from '@mui/material';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
-import classes from './LeadRow.module.css'
+import PersonIcon from '@mui/icons-material/Person';
+import classes from './LeadRow.module.css';
+import Mailbutton from '../UI/MailButton';
+import PhoneButton from '../UI/PhoneButton';
 
 function LeadRow(props) {
-  const { row , contacts } = props;
+  const { row } = props;
   const [open, setOpen] = useState(false);
   const date = new Date(row.created_at * 1000);
   const humanDate =
     date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
   const isTags = row._embedded.tags.length > 0;
-  console.log(isTags);
+  const contacts = row?._embedded?.contArr;
+
+  const getNumberOrEmail = (value) => {
+    switch (value.field_code){
+      case 'PHONE':
+        return (<TableCell key={value.field_id}><PhoneButton value={value}></PhoneButton> </TableCell>)
+      case 'EMAIL':
+        return (<TableCell key={value.field_id}><Mailbutton value={value}></Mailbutton></TableCell>)
+      default:
+        return
+    }
+  }
+  
+
   return (
     <>
       <TableRow {...props}>
@@ -43,33 +60,67 @@ function LeadRow(props) {
           }}
         >
           {row.name}
-          {isTags && row._embedded.tags.map(tag => <div className={classes.Tag}>{tag.name}</div>)}
+          {isTags &&
+            row._embedded.tags.map((tag) => (
+              <div key={tag.id}className={classes.Tag}>{tag.name}</div>
+            ))}
         </TableCell>
-        <TableCell align='right' sx={{
+        <TableCell
+          align='right'
+          sx={{
             flex: '1 1 20%',
             display: 'flex',
             alignItems: 'center',
-            justifyContent:'flex-end'
-            
-          }}><div className={classes.Status} style={{backgroundColor:`${row.status.color}`}}>{row.status.name}</div></TableCell>
-        <TableCell align='right' sx={{
+            justifyContent: 'flex-end',
+          }}
+        >
+          <div
+            className={classes.Status}
+            style={{ backgroundColor: `${row.status.color}` }}
+          >
+            {row.status.name}
+          </div>
+        </TableCell>
+        <TableCell
+          align='right'
+          sx={{
             flex: '1 1 20%',
             display: 'flex',
             alignItems: 'center',
-            justifyContent:'flex-end'
-            
-          }}>{row.resUser.name}</TableCell>
-        <TableCell align='right' sx={{
+            justifyContent: 'flex-end',
+          }}
+        >
+         <IconButton
+            aria-label='expand row'
+            size='small'
+            onClick={() => setOpen(!open)}
+          >
+            {<PersonIcon color='secondary'/>}
+          </IconButton>
+          {row.resUser.name}
+          
+        </TableCell>
+        <TableCell
+          align='right'
+          sx={{
             flex: '1 1 10%',
             display: 'flex',
             alignItems: 'center',
-            justifyContent:'flex-end'
-          }}>{humanDate}</TableCell>
-        <TableCell align='right' sx={{
+            justifyContent: 'flex-end',
+          }}
+        >
+          {humanDate}
+        </TableCell>
+        <TableCell
+          align='right'
+          sx={{
             flex: '1 1 10%',
             display: 'flex',
             alignItems: 'center',
-          }}>{row.price + ' ₽'}</TableCell>
+          }}
+        >
+          {row.price + ' ₽'}
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -81,8 +132,18 @@ function LeadRow(props) {
               <Table size='small' aria-label='purchases'>
                 <TableBody>
                   <TableRow>
-                    {contacts.map((contact, id) => <TableCell key={id}>{contact.name}</TableCell>)}
-                    
+                    {contacts &&
+                      contacts.map((contact) => {
+                        return (
+                          <TableRow>
+                            <TableCell key={contact.id}>{contact.name}</TableCell>
+                            {contact.custom_fields_values &&
+                              contact.custom_fields_values.map((value) => (
+                                getNumberOrEmail(value)
+                              ))}
+                          </TableRow>
+                        );
+                      })}
                   </TableRow>
                 </TableBody>
               </Table>
